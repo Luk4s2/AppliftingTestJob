@@ -12,10 +12,6 @@ class CrewScreen extends StatefulWidget {
 class _CrewScreenState extends State<CrewScreen> {
   @override
   Widget build(BuildContext context) {
-    ///Pixel Size of the availiable display
-    var size = MediaQuery.of(context).size;
-    var width = size.width;
-    var height = size.height;
     return Scaffold(
       appBar: AppBar(
           title: Selector<CrewScreenProvider, String>(
