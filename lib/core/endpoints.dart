@@ -2,6 +2,8 @@ abstract class Endpoints {
   String get apiCrewURL;
 
   String get apiPastLaunchUrl;
+
+  String get apiUpcomingLaunchUrl;
 }
 
 /// Class for holding geter for Endpoints
@@ -20,4 +22,8 @@ class DevEndpoints implements Endpoints {
 
   @override
   String get apiPastLaunchUrl => "https://api.spacexdata.com/v5/launches/past";
+
+  @override
+  String get apiUpcomingLaunchUrl =>
+      "https://api.spacexdata.com/v5/launches/upcoming";
 }

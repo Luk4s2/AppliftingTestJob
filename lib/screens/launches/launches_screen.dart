@@ -1,21 +1,23 @@
-import 'package:appliftingjob/providers/past_launch_provider.dart';
+import 'package:appliftingjob/providers/launches_provider.dart';
+import 'package:appliftingjob/screens/detail/detailed_launch_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class PastLaunchesScreen extends StatefulWidget {
-  const PastLaunchesScreen({super.key});
+class LaunchesScreen extends StatefulWidget {
+  const LaunchesScreen({super.key});
 
   @override
-  State<PastLaunchesScreen> createState() => _PastLaunchesScreenState();
+  State<LaunchesScreen> createState() => _LaunchesScreenState();
 }
 
-class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
-  TextEditingController _textController = TextEditingController();
+class _LaunchesScreenState extends State<LaunchesScreen> {
+  final TextEditingController _textController = TextEditingController();
 
   @override
   void initState() {
-    context.read<PastLaunchProvider>().getPastLaunchesData();
+    context.read<LaunchProvider>().getLaunchesData();
     super.initState();
   }
 
@@ -32,10 +34,10 @@ class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Selector<PastLaunchProvider, String>(
-              selector: (_, provider) => provider.getTotalPastLaunches,
+          title: Selector<LaunchProvider, String>(
+              selector: (_, provider) => provider.getTotalLaunches,
               builder: (_, value, __) {
-                return Text(value != "" ? "Total $value past launches" : "");
+                return Text(value != "" ? "Total $value launches" : "");
               }),
           centerTitle: true),
       body: Container(
@@ -50,7 +52,7 @@ class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SizedBox(
                       width: size.width * 0.95,
-                      child: Consumer<PastLaunchProvider>(
+                      child: Consumer<LaunchProvider>(
                         builder: (context, provider, child) {
                           return Column(
                             children: [
@@ -150,7 +152,56 @@ class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
                                                 fontSize: 13),
                                           )),
                                     ),
-                                  )
+                                  ),
+                                  const Spacer(
+                                    flex: 1,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: provider.getArePastLaunches
+                                              ? Colors.lightBlue
+                                              : Colors.grey,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: TextButton(
+                                          onPressed: () {
+                                            provider.setPastLaunches = true;
+                                            _textController.clear();
+                                          },
+                                          child: const Text(
+                                            "Past",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 13),
+                                          )),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: provider.getArePastLaunches
+                                              ? Colors.grey
+                                              : Colors.lightBlue,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: TextButton(
+                                          onPressed: () {
+                                            provider.setPastLaunches = false;
+                                            _textController.clear();
+                                          },
+                                          child: const Text(
+                                            "Upcoming",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 13),
+                                          )),
+                                    ),
+                                  ),
                                 ],
                               )
                             ],
@@ -160,19 +211,19 @@ class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
                 ),
                 Expanded(
                   flex: 85,
-                  child: Consumer<PastLaunchProvider>(
+                  child: Consumer<LaunchProvider>(
                     builder: (context, provider, child) {
                       return provider.getStoredData.isNotEmpty
                           ? ListView.builder(
                               itemCount: provider.getFilteredData.length,
                               itemBuilder: (BuildContext ctx, index) {
-                                return cardData(provider, index, size);
+                                return cardData(provider, index, size, context);
                               },
                             )
                           :
 
                           // If no display the loading indicator or resresh button if Api loading failed
-                          context.read<PastLaunchProvider>().getIsLoading
+                          context.read<LaunchProvider>().getIsLoading
                               ? const Center(
                                   child: CircularProgressIndicator.adaptive())
                               : Center(
@@ -198,8 +249,8 @@ class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
                                             //Refresh the data
                                             setState(() {
                                               context
-                                                  .read<PastLaunchProvider>()
-                                                  .getPastLaunchesData();
+                                                  .read<LaunchProvider>()
+                                                  .getLaunchesData();
                                             });
                                           },
                                           child: Container(
@@ -235,7 +286,8 @@ class _PastLaunchesScreenState extends State<PastLaunchesScreen> {
   }
 }
 
-Widget cardData(PastLaunchProvider provider, int index, Size size) {
+Widget cardData(
+    LaunchProvider provider, int index, Size size, BuildContext context) {
   var width = size.width;
   final data = provider.getFilteredData[index];
 
@@ -246,7 +298,11 @@ Widget cardData(PastLaunchProvider provider, int index, Size size) {
       color: const Color.fromARGB(115, 111, 212, 255),
       child: InkWell(
         onTap: () {
-          //TODO Go to detail page
+          // Open detailed Page and pass the data from chosen item
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => DetailLaunchScreen(data: data)));
         },
         child: Padding(
           padding: const EdgeInsets.all(10),

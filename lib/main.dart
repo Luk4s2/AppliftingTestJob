@@ -1,6 +1,6 @@
 import 'package:appliftingjob/providers/bottom_bar_provider.dart';
 import 'package:appliftingjob/providers/crew_screen_provider.dart';
-import 'package:appliftingjob/providers/past_launch_provider.dart';
+import 'package:appliftingjob/providers/launches_provider.dart';
 import 'package:appliftingjob/routes/routes.dart';
 import 'package:appliftingjob/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +14,7 @@ void main() {
             create: (_) => CrewScreenProvider()),
         ChangeNotifierProvider<BottomNavigationBarProvider>(
             create: (_) => BottomNavigationBarProvider()),
-        ChangeNotifierProvider<PastLaunchProvider>(
-            create: (_) => PastLaunchProvider()),
+        ChangeNotifierProvider<LaunchProvider>(create: (_) => LaunchProvider()),
       ],
       child: const MyApp(),
     ),

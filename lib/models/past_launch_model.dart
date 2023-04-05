@@ -1,18 +1,14 @@
-// To parse this JSON data, do
-//
-//     final pastLaunchesModel = pastLaunchesModelFromJson(jsonString);
-
 import 'dart:convert';
 
-List<PastLaunchesModel> pastLaunchesModelFromJson(String str) =>
-    List<PastLaunchesModel>.from(
-        json.decode(str).map((x) => PastLaunchesModel.fromJson(x)));
+List<LaunchesModel> launchesModelFromJson(String str) =>
+    List<LaunchesModel>.from(
+        json.decode(str).map((x) => LaunchesModel.fromJson(x)));
 
-String pastLaunchesModelToJson(List<PastLaunchesModel> data) =>
+String launchesModelToJson(List<LaunchesModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class PastLaunchesModel {
-  PastLaunchesModel({
+class LaunchesModel {
+  LaunchesModel({
     this.fairings,
     this.net,
     this.window,
@@ -64,8 +60,7 @@ class PastLaunchesModel {
   final dynamic launchLibraryId;
   final String? id;
 
-  factory PastLaunchesModel.fromJson(Map<String, dynamic> json) =>
-      PastLaunchesModel(
+  factory LaunchesModel.fromJson(Map<String, dynamic> json) => LaunchesModel(
         fairings: json["fairings"] == null
             ? null
             : Fairings.fromJson(json["fairings"]),

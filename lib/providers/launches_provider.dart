@@ -6,18 +6,15 @@ import 'package:http/http.dart' as http;
 
 import '../core/endpoints.dart';
 
-class PastLaunchProvider extends ChangeNotifier {
-  /// Stored Endpoint URL for apiPastLaunchUrl
-  final String _baseUrl = Environment.endpoints.apiPastLaunchUrl;
-
+class LaunchProvider extends ChangeNotifier {
   /// Stored Last Data from API
-  List<PastLaunchesModel> _storedLastData = [];
+  List<LaunchesModel> _storedLastData = [];
 
   /// Stored Filtered data by user Input
-  List<PastLaunchesModel> _filteredData = [];
+  List<LaunchesModel> _filteredData = [];
 
   /// Variable holding amount of finded past launch
-  String _totalPastLaunches = "";
+  String _totalLaunches = "";
 
   /// Variable holding current hint message
   String _hintMessage = "Name";
@@ -28,11 +25,17 @@ class PastLaunchProvider extends ChangeNotifier {
   /// Search filter
   int _searchFilter = 0;
 
+  /// Bool to check if past or upcoming launches are choosen
+  bool _arePastLaunches = true;
+
   /// Getter for filtered Past Launch Data
-  List<PastLaunchesModel> get getFilteredData => _filteredData;
+  List<LaunchesModel> get getFilteredData => _filteredData;
 
   /// Getter for stored Past Launch Data
-  List<PastLaunchesModel> get getStoredData => _storedLastData;
+  List<LaunchesModel> get getStoredData => _storedLastData;
+
+  /// Getter for bool which checking upcoming or past launches
+  bool get getArePastLaunches => _arePastLaunches;
 
   /// Getter for Search Flight Number
   int get getSearchFilter => _searchFilter;
@@ -41,10 +44,21 @@ class PastLaunchProvider extends ChangeNotifier {
   String get getHintMessage => _hintMessage;
 
   /// Getter for past Launch data
-  String get getTotalPastLaunches => _totalPastLaunches;
+  String get getTotalLaunches => _totalLaunches;
 
   /// Getter for isLoading
   bool get getIsLoading => _isLoading;
+
+  /// Setter for choosing between past and upcoming launches
+  set setPastLaunches(bool newBool) {
+    _arePastLaunches = newBool;
+    // Clear stored last data
+    _storedLastData = [];
+    _totalLaunches = "";
+    // Get new updated data from api
+    getLaunchesData();
+    notifyListeners();
+  }
 
   /// Seter for searching by Flight
   set setSearchFilter(int newInt) {
@@ -107,7 +121,8 @@ class PastLaunchProvider extends ChangeNotifier {
 
   /// Function to set value of total past Launches
   void storeLenghtOfPL() {
-    _totalPastLaunches = _filteredData.length.toString();
+    _totalLaunches =
+        "${_filteredData.length} ${_arePastLaunches ? "past" : "upcoming"}";
     notifyListeners();
   }
 
@@ -119,9 +134,13 @@ class PastLaunchProvider extends ChangeNotifier {
   }
 
   /// Get request for getting informations about past launches
-  Future<List<PastLaunchesModel>?> getPastLaunchesData() async {
+  Future<List<LaunchesModel>?> getLaunchesData() async {
+    /// Stored Endpoint URL from endpoints
+    final String baseUrl = _arePastLaunches
+        ? Environment.endpoints.apiPastLaunchUrl
+        : Environment.endpoints.apiUpcomingLaunchUrl;
     _isLoading = true;
-    final url = Uri.parse(_baseUrl);
+    final url = Uri.parse(baseUrl);
     final request = http.get(
       url,
       headers: {
@@ -135,7 +154,7 @@ class PastLaunchProvider extends ChangeNotifier {
       log("Past Launch API status : status code: ${response.statusCode},  ${response.reasonPhrase}");
       if (response.statusCode == 200) {
         // If success parse data through model
-        final parsedData = pastLaunchesModelFromJson(response.body);
+        final parsedData = launchesModelFromJson(response.body);
 
         _storedLastData = parsedData;
         // Update filtered data with stored Data
