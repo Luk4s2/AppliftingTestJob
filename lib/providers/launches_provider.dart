@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:appliftingjob/models/past_launch_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/endpoints.dart';
 
@@ -257,6 +258,7 @@ class LaunchProvider extends ChangeNotifier {
         storeLenghtOfPL();
         // Apply sorting filter method if any was turned on
         _usedSortingFilter();
+
         _isLoading = false;
 
         return _storedLastData;
@@ -276,5 +278,36 @@ class LaunchProvider extends ChangeNotifier {
 
       return null;
     }
+  }
+
+  /// Function which save user filter to local storage
+  Future<void> saveFilter() async {
+    // Wait for getting instance before save
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Saving data from filter to local storage
+    await prefs.setInt("searchFilter", _searchFilter);
+    await prefs.setInt("sortFilter", _sortFilter);
+    await prefs.setString("hintMessage", _hintMessage);
+    await prefs.setBool("sortNameAsc", _isSortNameAsc);
+    await prefs.setBool("sortDateAsc", _isSortDateAsc);
+    await prefs.setBool("arePastLaunches", _arePastLaunches);
+    log("Filter has been saved");
+  }
+
+  Future<void> loadFilter() async {
+    // Wait for getting instance before save
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Load data from local storage to filter
+    _searchFilter = prefs.getInt("searchFilter") ?? _searchFilter;
+    _sortFilter = prefs.getInt("sortFilter") ?? _sortFilter;
+    _hintMessage = prefs.getString("hintMessage") ?? _hintMessage;
+    _isSortNameAsc = prefs.getBool("sortNameAsc") ?? _isSortNameAsc;
+    _isSortDateAsc = prefs.getBool("sortDateAsc") ?? _isSortDateAsc;
+    _arePastLaunches = prefs.getBool("arePastLaunches") ?? _arePastLaunches;
+
+    log("Filter has been loaded");
+    //Then load data from API with used filters
+    getLaunchesData();
+    notifyListeners();
   }
 }

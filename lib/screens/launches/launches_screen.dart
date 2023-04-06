@@ -17,7 +17,7 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
 
   @override
   void initState() {
-    context.read<LaunchProvider>().getLaunchesData();
+    context.read<LaunchProvider>().loadFilter();
     super.initState();
   }
 
@@ -56,28 +56,61 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                         builder: (context, provider, child) {
                           return Column(
                             children: [
-                              TextField(
-                                controller: _textController,
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.search),
-                                  border: const OutlineInputBorder(),
-                                  hintText:
-                                      'Search by ${provider.getHintMessage}',
-                                ),
-                                onChanged: (value) {
-                                  switch (provider.getSearchFilter) {
-                                    case 0:
-                                      provider.searchingByName(value);
-                                      break;
-                                    case 1:
-                                      provider.searchingByID(value);
-                                      break;
-                                    case 2:
-                                      provider.searchingByFlight(value);
-                                      break;
-                                    default:
-                                  }
-                                },
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 90,
+                                    child: TextField(
+                                      controller: _textController,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(Icons.search),
+                                        border: const OutlineInputBorder(),
+                                        hintText:
+                                            'Search by ${provider.getHintMessage}',
+                                      ),
+                                      onChanged: (value) {
+                                        switch (provider.getSearchFilter) {
+                                          case 0:
+                                            provider.searchingByName(value);
+                                            break;
+                                          case 1:
+                                            provider.searchingByID(value);
+                                            break;
+                                          case 2:
+                                            provider.searchingByFlight(value);
+                                            break;
+                                          default:
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.lightBlue,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: TextButton(
+                                            onPressed: () {
+                                              provider.saveFilter();
+                                            },
+                                            child: const Text(
+                                              softWrap: true,
+                                              maxLines: 2,
+                                              "Save Filter",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                  fontSize: 13),
+                                            )),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Row(
                                 children: [
