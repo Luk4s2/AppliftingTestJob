@@ -160,6 +160,75 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                                     padding: const EdgeInsets.all(4.0),
                                     child: Container(
                                       decoration: BoxDecoration(
+                                          color: provider.getSortFilter == 1
+                                              ? Colors.lightBlue
+                                              : Colors.grey,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: TextButton(
+                                          onPressed: () {
+                                            provider.setSortFilter = 1;
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                "Sort name",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                    fontSize: 13),
+                                              ),
+                                              Icon(
+                                                provider.getSortNameIsAsc
+                                                    ? Icons.arrow_upward_rounded
+                                                    : Icons
+                                                        .arrow_downward_rounded,
+                                                color: Colors.white,
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: provider.getSortFilter == 2
+                                              ? Colors.lightBlue
+                                              : Colors.grey,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: TextButton(
+                                          onPressed: () {
+                                            provider.setSortFilter = 2;
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                "Sort date",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                    fontSize: 13),
+                                              ),
+                                              Icon(
+                                                provider.getSortDateIsAsc
+                                                    ? Icons.arrow_upward_rounded
+                                                    : Icons
+                                                        .arrow_downward_rounded,
+                                                color: Colors.white,
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                  ),
+                                  const Spacer(
+                                    flex: 1,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
                                           color: provider.getArePastLaunches
                                               ? Colors.lightBlue
                                               : Colors.grey,
@@ -167,8 +236,12 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                                               BorderRadius.circular(10)),
                                       child: TextButton(
                                           onPressed: () {
-                                            provider.setPastLaunches = true;
-                                            _textController.clear();
+                                            // Prevent User from clicking multiple times befor data are loaded
+                                            if (provider.getIsLoading ==
+                                                false) {
+                                              provider.setPastLaunches = true;
+                                              _textController.clear();
+                                            }
                                           },
                                           child: const Text(
                                             "Past",
@@ -190,8 +263,12 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                                               BorderRadius.circular(10)),
                                       child: TextButton(
                                           onPressed: () {
-                                            provider.setPastLaunches = false;
-                                            _textController.clear();
+                                            // Prevent User from clicking multiple times befor data are loaded
+                                            if (provider.getIsLoading ==
+                                                false) {
+                                              provider.setPastLaunches = false;
+                                              _textController.clear();
+                                            }
                                           },
                                           child: const Text(
                                             "Upcoming",
