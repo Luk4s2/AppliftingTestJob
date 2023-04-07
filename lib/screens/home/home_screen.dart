@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
         context.watch<BottomNavigationBarProvider>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _pages[bottomNavProvider.currentTabIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomNavProvider.currentTabIndex,
