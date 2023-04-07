@@ -8,14 +8,16 @@ import '../models/crew_model.dart';
 import '../core/endpoints.dart';
 
 class CrewScreenProvider extends ChangeNotifier {
-  /// Stored Endpoint URL for apiCrew
-  final String _baseUrl = Environment.endpoints.apiCrewURL;
-
   /// Variable holding amount of finded crews
   String _totalCrews = "";
 
+  /// Stored Data
+  List<CrewModel> _storedData = [];
+
   /// Loading data
   bool _isLoading = true;
+
+  List<CrewModel> get getStoredData => _storedData;
 
   /// Getter for totalCrew
   String get getTotalCrew => _totalCrews;
@@ -30,17 +32,19 @@ class CrewScreenProvider extends ChangeNotifier {
   }
 
   /// Open the URL of the selected Crew Member
-  Future<void> launchingUrl(AsyncSnapshot snapshot, int index) async {
-    if (!await launchUrl(Uri.parse(snapshot.data![index].wikipedia))) {
-      throw Exception('Could not launch ${snapshot.data![index].wikipedia}');
+  Future<void> launchingUrl(CrewModel data, int index) async {
+    if (!await launchUrl(Uri.parse(data.wikipedia))) {
+      throw Exception('Could not launch ${data.wikipedia}');
     }
   }
 
   /// Get request for getting informations about crew
   Future<List<CrewModel>?> getCrewData() async {
+    /// Stored Endpoint URL for apiCrew
+    final String baseUrl = Environment.endpoints.apiCrewURL;
     _isLoading = true;
     _totalCrews = "";
-    final url = Uri.parse(_baseUrl);
+    final url = Uri.parse(baseUrl);
     final request = http.get(
       url,
       headers: {
@@ -55,22 +59,24 @@ class CrewScreenProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         // If success parse data through model
         final parsedData = crewModelFromJson(response.body);
+        // Store data for later
+        _storedData = parsedData;
+        _isLoading = false;
         // Store total amount of finded Crews members
         storeCrewLength(parsedData);
-
-        return parsedData;
+        return _storedData;
       } else {
         log("Error");
         //Show refresh Button
         _isLoading = false;
-
+        notifyListeners();
         return null;
       }
     } on Exception catch (error) {
       log('Failed get status reason : $error');
       //Show refresh Button
       _isLoading = false;
-
+      notifyListeners();
       return null;
     }
   }

@@ -453,7 +453,7 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                             :
 
                             // If no display the loading indicator or resresh button if Api loading failed
-                            context.read<LaunchProvider>().getIsLoading
+                            provider.getIsLoading
                                 ? const Center(
                                     child: CircularProgressIndicator.adaptive())
                                 : Center(
@@ -479,9 +479,7 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                                             onPressed: () {
                                               //Refresh the data
                                               setState(() {
-                                                context
-                                                    .read<LaunchProvider>()
-                                                    .getLaunchesData();
+                                                provider.getLaunchesData();
                                               });
                                             },
                                             child: Container(
