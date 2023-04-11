@@ -1,4 +1,6 @@
 import 'package:appliftingjob/providers/bottom_bar_provider.dart';
+import 'package:appliftingjob/providers/crew_screen_provider.dart';
+import 'package:appliftingjob/providers/launches_provider.dart';
 import 'package:appliftingjob/routes/routes.dart';
 import 'package:appliftingjob/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,11 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => BottomNavigationBarProvider()),
+        ChangeNotifierProvider<CrewScreenProvider>(
+            create: (_) => CrewScreenProvider()),
+        ChangeNotifierProvider<BottomNavigationBarProvider>(
+            create: (_) => BottomNavigationBarProvider()),
+        ChangeNotifierProvider<LaunchProvider>(create: (_) => LaunchProvider()),
       ],
       child: const MyApp(),
     ),
