@@ -71,6 +71,7 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                                       Expanded(
                                         flex: 90,
                                         child: TextField(
+                                          key: const Key("textfield"),
                                           controller: _textController,
                                           decoration: InputDecoration(
                                             contentPadding:
@@ -133,7 +134,7 @@ class _LaunchesScreenState extends State<LaunchesScreen> {
                                                                             1),
                                                                 content: Center(
                                                                   child: Text(
-                                                                      "Sucesfully saved filter"),
+                                                                      "Successfully saved filter"),
                                                                 )));
                                                   });
                                                 },

@@ -234,6 +234,7 @@ class LaunchProvider extends ChangeNotifier {
     final String baseUrl = _arePastLaunches
         ? Environment.endpoints.apiPastLaunchUrl
         : Environment.endpoints.apiUpcomingLaunchUrl;
+    //Show Loading
     _isLoading = true;
     final url = Uri.parse(baseUrl);
     final request = http.get(
@@ -258,13 +259,14 @@ class LaunchProvider extends ChangeNotifier {
         storeLenghtOfPL();
         // Apply sorting filter method if any was turned on
         _usedSortingFilter();
-
+        // Cancell loading
         _isLoading = false;
 
         return _storedLastData;
       } else {
         log("Error");
         //Show refresh Button
+        // Cancell loading
         _isLoading = false;
         notifyListeners();
 
@@ -273,6 +275,7 @@ class LaunchProvider extends ChangeNotifier {
     } on Exception catch (error) {
       log('Failed get status reason : $error');
       //Show refresh Button
+      // Cancell loading
       _isLoading = false;
       notifyListeners();
 
